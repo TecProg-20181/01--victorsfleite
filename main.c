@@ -44,19 +44,19 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
-void blur(unsigned int height, Pixel pixel[512][512], int T, unsigned int width)
+Image blur(Image img, int T)
 {
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
             Pixel media = {0, 0, 0};
 
-            int menor_h = (height - 1 > i + T/2) ? i + T/2 : height - 1;
-            int min_w = (width - 1 > j + T/2) ? j + T/2 : width - 1;
+            int menor_h = (img.height - 1 > i + T/2) ? i + T/2 : img.height - 1;
+            int min_w = (img.width - 1 > j + T/2) ? j + T/2 : img.width - 1;
             for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
                 for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.r += pixel[x][y].r;
-                    media.g += pixel[x][y].g;
-                    media.b += pixel[x][y].b;
+                    media.r += img.pixel[x][y].r;
+                    media.g += img.pixel[x][y].g;
+                    media.b += img.pixel[x][y].b;
                 }
             }
 
@@ -65,11 +65,13 @@ void blur(unsigned int height, Pixel pixel[512][512], int T, unsigned int width)
             media.g /= T * T;
             media.b /= T * T;
 
-            pixel[i][j].r = media.r;
-            pixel[i][j].g = media.g;
-            pixel[i][j].b = media.b;
+            img.pixel[i][j].r = media.r;
+            img.pixel[i][j].g = media.g;
+            img.pixel[i][j].b = media.b;
         }
     }
+
+    return img;
 }
 
 Image rotacionar90direita(Image img) {
@@ -89,15 +91,16 @@ Image rotacionar90direita(Image img) {
     return rotacionada;
 }
 
-void inverter_cores(Pixel pixel[512][512],
-                    unsigned int width, unsigned int height) {
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            pixel[i][j].r = 255 - pixel[i][j].r;
-            pixel[i][j].g = 255 - pixel[i][j].g;
-            pixel[i][j].b = 255 - pixel[i][j].b;
+Image inverter_cores(Image img) {
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            img.pixel[i][j].r = 255 - img.pixel[i][j].r;
+            img.pixel[i][j].g = 255 - img.pixel[i][j].g;
+            img.pixel[i][j].b = 255 - img.pixel[i][j].b;
         }
     }
+
+    return img;
 }
 
 Image cortar_imagem(Image img, int x, int y, int width, int height) {
@@ -181,7 +184,7 @@ int main() {
                 // read degree of blur
                 int tamanho = 0;
                 scanf("%d", &tamanho);
-                blur(img.height, img.pixel, tamanho, img.width);
+                img = blur(img, tamanho);
                 break;
             }
             case 4: { // Rotacao
@@ -227,7 +230,7 @@ int main() {
                 break;
             }
             case 6: { // Inversao de Cores
-                inverter_cores(img.pixel, img.width, img.height);
+                img = inverter_cores(img);
                 break;
             }
             case 7: { // Cortar Imagem
