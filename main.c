@@ -27,14 +27,14 @@ int pixel_igual(Pixel p1, Pixel p2) {
     return 0;
 }
 
+int pixel_media(Pixel pixel) {
+    return (pixel.r + pixel.g + pixel.b) / 3;
+}
 
 Image escala_de_cinza(Image img) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            int media = img.pixel[i][j].r +
-                        img.pixel[i][j].g +
-                        img.pixel[i][j].b;
-            media /= 3;
+            int media = pixel_media(img.pixel[i][j]);
             img.pixel[i][j].r = media;
             img.pixel[i][j].g = media;
             img.pixel[i][j].b = media;
