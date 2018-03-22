@@ -44,7 +44,7 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
-void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, unsigned int width)
+void blur(unsigned int height, Pixel pixel[512][512], int T, unsigned int width)
 {
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
@@ -54,9 +54,9 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, uns
             int min_w = (width - 1 > j + T/2) ? j + T/2 : width - 1;
             for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
                 for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
-                    media.r += pixel[x][y][0];
-                    media.g += pixel[x][y][1];
-                    media.b += pixel[x][y][2];
+                    media.r += pixel[x][y].r;
+                    media.g += pixel[x][y].g;
+                    media.b += pixel[x][y].b;
                 }
             }
 
@@ -65,9 +65,9 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, uns
             media.g /= T * T;
             media.b /= T * T;
 
-            pixel[i][j][0] = media.r;
-            pixel[i][j][1] = media.g;
-            pixel[i][j][2] = media.b;
+            pixel[i][j].r = media.r;
+            pixel[i][j].g = media.g;
+            pixel[i][j].b = media.b;
         }
     }
 }
@@ -89,13 +89,13 @@ Image rotacionar90direita(Image img) {
     return rotacionada;
 }
 
-void inverter_cores(unsigned short int pixel[512][512][3],
+void inverter_cores(Pixel pixel[512][512],
                     unsigned int width, unsigned int height) {
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
-            pixel[i][j][0] = 255 - pixel[i][j][0];
-            pixel[i][j][1] = 255 - pixel[i][j][1];
-            pixel[i][j][2] = 255 - pixel[i][j][2];
+            pixel[i][j].r = 255 - pixel[i][j].r;
+            pixel[i][j].g = 255 - pixel[i][j].g;
+            pixel[i][j].b = 255 - pixel[i][j].b;
         }
     }
 }
@@ -156,20 +156,20 @@ int main() {
             case 2: { // Filtro Sepia
                 for (unsigned int x = 0; x < img.height; ++x) {
                     for (unsigned int j = 0; j < img.width; ++j) {
-                        unsigned short int pixel[3];
-                        pixel[0] = img.pixel[x][j].r;
-                        pixel[1] = img.pixel[x][j].g;
-                        pixel[2] = img.pixel[x][j].b;
+                        Pixel pixel;
+                        pixel.r = img.pixel[x][j].r;
+                        pixel.g = img.pixel[x][j].g;
+                        pixel.b = img.pixel[x][j].b;
 
-                        int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
+                        int p =  pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
                         int menor_r = (255 >  p) ? p : 255;
                         img.pixel[x][j].r = menor_r;
 
-                        p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
+                        p =  pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
                         menor_r = (255 >  p) ? p : 255;
                         img.pixel[x][j].g = menor_r;
 
-                        p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
+                        p =  pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
                         menor_r = (255 >  p) ? p : 255;
                         img.pixel[x][j].b = menor_r;
                     }
