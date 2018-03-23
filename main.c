@@ -13,10 +13,16 @@ typedef struct _image {
 } Image;
 
 
-int max(int a, int b) {
-    if (a > b)
-        return a;
-    return b;
+int maior(int a, int b) {
+    return (a > b) ? a : b;
+}
+
+int menor(int a, int b) {
+    return (a < b) ? a : b;
+}
+
+int positivo(int a) {
+    return (0 > a) ? 0 : a;
 }
 
 int pixel_igual(Pixel p1, Pixel p2) {
@@ -48,10 +54,10 @@ Image blur(Image img, int T)
         for (unsigned int j = 0; j < img.width; ++j) {
             Pixel media = {0, 0, 0};
 
-            int menor_h = (img.height - 1 > i + T/2) ? i + T/2 : img.height - 1;
-            int min_w = (img.width - 1 > j + T/2) ? j + T/2 : img.width - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_h; ++x) {
-                for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_w; ++y) {
+            int menor_h = menor(img.height - 1, i + T / 2);
+            int menor_w = menor(img.width -1, j + T/2);
+            for(int x = positivo(i - T/2); x <= menor_h; ++x) {
+                for(int y = positivo(j - T/2); y <= menor_w; ++y) {
                     media.r += img.pixel[x][y].r;
                     media.g += img.pixel[x][y].g;
                     media.b += img.pixel[x][y].b;
@@ -154,15 +160,15 @@ int main() {
                         Pixel pixel = img.pixel[x][j];
 
                         int p =  pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
-                        int menor_r = (255 >  p) ? p : 255;
+                        int menor_r = menor(255, p);
                         img.pixel[x][j].r = menor_r;
 
                         p =  pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
-                        menor_r = (255 >  p) ? p : 255;
+                        menor_r = menor(255, p);
                         img.pixel[x][j].g = menor_r;
 
                         p =  pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
-                        menor_r = (255 >  p) ? p : 255;
+                        menor_r = menor(255, p);
                         img.pixel[x][j].b = menor_r;
                     }
                 }
