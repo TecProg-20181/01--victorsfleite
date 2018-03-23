@@ -13,6 +13,29 @@ typedef struct _image {
 } Image;
 
 
+Image read_image() {
+    Image img;
+
+    // read type of image
+    char p3[4];
+    scanf("%s", p3);
+
+    // read width, height and color of image
+    int max_color;
+    scanf("%u %u %d", &img.width, &img.height, &max_color);
+
+    // read all pixels of image, each pixel (column) for each line
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            scanf("%hu %hu %hu", &img.pixel[i][j].r,
+                                 &img.pixel[i][j].g,
+                                 &img.pixel[i][j].b);
+        }
+    }
+
+    return img;
+}
+
 int maior(int a, int b) {
     return (a > b) ? a : b;
 }
@@ -187,25 +210,7 @@ Image cortar_imagem(Image img, int x, int y, int width, int height) {
 
 
 int main() {
-    Image img;
-
-    // read type of image
-    char p3[4];
-    scanf("%s", p3);
-
-    // read width, height and color of image
-    int max_color;
-    scanf("%u %u %d", &img.width, &img.height, &max_color);
-
-    // read all pixels of image, each pixel (column) for each line
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            scanf("%hu %hu %hu", &img.pixel[i][j].r,
-                                 &img.pixel[i][j].g,
-                                 &img.pixel[i][j].b);
-
-        }
-    }
+    Image img = read_image();
 
     // read the number of operations to be applied
     int n_opcoes;
