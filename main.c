@@ -48,6 +48,28 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
+Image sepia(Image img) {
+    for(unsigned int x = 0; x < img.height; ++x) {
+        for(unsigned int j = 0; j < img.width; ++j) {
+            Pixel pixel = img.pixel[x][j];
+
+            int p = pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
+            int menor_r = menor(255, p);
+            img.pixel[x][j].r = menor_r;
+
+            p = pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
+            menor_r = menor(255, p);
+            img.pixel[x][j].g = menor_r;
+
+            p = pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
+            menor_r = menor(255, p);
+            img.pixel[x][j].b = menor_r;
+        }
+    }
+
+    return img;
+}
+
 Image blur(Image img, int T)
 {
     for (unsigned int i = 0; i < img.height; ++i) {
@@ -155,23 +177,7 @@ int main() {
                 break;
             }
             case 2: { // Filtro Sepia
-                for (unsigned int x = 0; x < img.height; ++x) {
-                    for (unsigned int j = 0; j < img.width; ++j) {
-                        Pixel pixel = img.pixel[x][j];
-
-                        int p =  pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
-                        int menor_r = menor(255, p);
-                        img.pixel[x][j].r = menor_r;
-
-                        p =  pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
-                        menor_r = menor(255, p);
-                        img.pixel[x][j].g = menor_r;
-
-                        p =  pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
-                        menor_r = menor(255, p);
-                        img.pixel[x][j].b = menor_r;
-                    }
-                }
+                img = sepia(img);
 
                 break;
             }
