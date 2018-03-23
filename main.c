@@ -89,20 +89,24 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
+int sepia_valid_color(Pixel pixel, float sepia_color_values[3]) {
+    int p = pixel.r * sepia_color_values[1] +
+            pixel.g * sepia_color_values[1] +
+            pixel.b * sepia_color_values[2];
+    int color = menor(255, p);
+
+    return color;
+}
+
 Pixel pixel_sepia(Pixel img_pixel) {
     Pixel sepia_pixel;
+    float sepia_red[] = {.393, .769, .189};
+    float sepia_green[] = {.349, .686, .168};
+    float sepia_blue[] = {.272, .534, .131};
 
-    int p = img_pixel.r * .393 + img_pixel.g * .769 + img_pixel.b * .189;
-    int menor_r = menor(255, p);
-    sepia_pixel.r = menor_r;
-
-    p = img_pixel.r * .349 + img_pixel.g * .686 + img_pixel.b * .168;
-    menor_r = menor(255, p);
-    sepia_pixel.g = menor_r;
-
-    p = img_pixel.r * .272 + img_pixel.g * .534 + img_pixel.b * .131;
-    menor_r = menor(255, p);
-    sepia_pixel.b = menor_r;
+    sepia_pixel.r = sepia_valid_color(img_pixel, sepia_red);
+    sepia_pixel.g = sepia_valid_color(img_pixel, sepia_green);
+    sepia_pixel.b = sepia_valid_color(img_pixel, sepia_blue);
 
     return sepia_pixel;
 }
