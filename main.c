@@ -113,6 +113,35 @@ Image rotacionar90direita(Image img) {
     return rotacionada;
 }
 
+Image espelhar_vertical(Image img) {
+    int horizontal = 0;
+    scanf("%d", &horizontal);
+
+    int width = img.width, height = img.height;
+
+    if (horizontal == 1)
+        width /= 2;
+    else
+        height /= 2;
+
+    for (int i2 = 0; i2 < height; ++i2) {
+        for (int j = 0; j < width; ++j) {
+            int x = i2, y = j;
+
+            if (horizontal == 1) y = img.width - 1 - j;
+            else x = img.height - 1 - i2;
+
+            Pixel aux1 = img.pixel[i2][j];
+
+            img.pixel[i2][j] = img.pixel[x][y];
+
+            img.pixel[x][y] = aux1;
+        }
+    }
+
+    return img;
+}
+
 Image inverter_cores(Image img) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
@@ -198,29 +227,7 @@ int main() {
                 break;
             }
             case 5: { // Espelhamento
-                int horizontal = 0;
-                scanf("%d", &horizontal);
-
-                int width = img.width, height = img.height;
-
-                if (horizontal == 1) width /= 2;
-                else height /= 2;
-
-                for (int i2 = 0; i2 < height; ++i2)
-                {
-                    for (int j = 0; j < width; ++j) {
-                        int x = i2, y = j;
-
-                        if (horizontal == 1) y = img.width - 1 - j;
-                        else x = img.height - 1 - i2;
-
-                        Pixel aux1 = img.pixel[i2][j];
-
-                        img.pixel[i2][j] = img.pixel[x][y];
-
-                        img.pixel[x][y] = aux1;
-                    }
-                }
+                img = espelhar_vertical(img);
                 break;
             }
             case 6: { // Inversao de Cores
