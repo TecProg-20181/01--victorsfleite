@@ -37,6 +37,24 @@ int pixel_media(Pixel pixel) {
     return (pixel.r + pixel.g + pixel.b) / 3;
 }
 
+void print_image(Image img) {
+    // print type of image
+    printf("P3\n");
+
+    // print width height and color of image
+    printf("%u %u\n255\n", img.width, img.height);
+
+    // print pixels of image
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            printf("%hu %hu %hu ", img.pixel[i][j].r,
+                   img.pixel[i][j].g,
+                   img.pixel[i][j].b);
+        }
+        printf("\n");
+    }
+}
+
 Image escala_de_cinza(Image img) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
@@ -119,10 +137,8 @@ Image espelhar_vertical(Image img) {
 
     int width = img.width, height = img.height;
 
-    if (horizontal == 1)
-        width /= 2;
-    else
-        height /= 2;
+    if (horizontal == 1) width /= 2;
+    else height /= 2;
 
     for (int i2 = 0; i2 < height; ++i2) {
         for (int j = 0; j < width; ++j) {
@@ -247,20 +263,6 @@ int main() {
 
     }
 
-    // print type of image
-    printf("P3\n");
-    // print width height and color of image
-    printf("%u %u\n255\n", img.width, img.height);
-
-    // print pixels of image
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            printf("%hu %hu %hu ", img.pixel[i][j].r,
-                                   img.pixel[i][j].g,
-                                   img.pixel[i][j].b);
-
-        }
-        printf("\n");
-    }
+    print_image(img);
     return 0;
 }
