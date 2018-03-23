@@ -89,22 +89,28 @@ Image escala_de_cinza(Image img) {
     return img;
 }
 
+Pixel pixel_sepia(Pixel img_pixel) {
+    Pixel sepia_pixel;
+
+    int p = img_pixel.r * .393 + img_pixel.g * .769 + img_pixel.b * .189;
+    int menor_r = menor(255, p);
+    sepia_pixel.r = menor_r;
+
+    p = img_pixel.r * .349 + img_pixel.g * .686 + img_pixel.b * .168;
+    menor_r = menor(255, p);
+    sepia_pixel.g = menor_r;
+
+    p = img_pixel.r * .272 + img_pixel.g * .534 + img_pixel.b * .131;
+    menor_r = menor(255, p);
+    sepia_pixel.b = menor_r;
+
+    return sepia_pixel;
+}
+
 Image sepia(Image img) {
-    for(unsigned int x = 0; x < img.height; ++x) {
+    for(unsigned int i = 0; i < img.height; ++i) {
         for(unsigned int j = 0; j < img.width; ++j) {
-            Pixel pixel = img.pixel[x][j];
-
-            int p = pixel.r * .393 + pixel.g * .769 + pixel.b * .189;
-            int menor_r = menor(255, p);
-            img.pixel[x][j].r = menor_r;
-
-            p = pixel.r * .349 + pixel.g * .686 + pixel.b * .168;
-            menor_r = menor(255, p);
-            img.pixel[x][j].g = menor_r;
-
-            p = pixel.r * .272 + pixel.g * .534 + pixel.b * .131;
-            menor_r = menor(255, p);
-            img.pixel[x][j].b = menor_r;
+            img.pixel[i][j] = pixel_sepia(img.pixel[i][j]);
         }
     }
 
