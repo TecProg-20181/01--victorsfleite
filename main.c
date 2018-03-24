@@ -104,8 +104,8 @@ Pixel formatSepiaPixel(Pixel img_pixel) {
 }
 
 Image applySepia(Image img) {
-    for(unsigned int i = 0; i < img.height; ++i) {
-        for(unsigned int j = 0; j < img.width; ++j) {
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
             img.pixel[i][j] = formatSepiaPixel(img.pixel[i][j]);
         }
     }
@@ -120,8 +120,8 @@ Image applyBlur(Image img, int T) {
 
             int lower_height = lowestValue(img.height - 1, i + T / 2);
             int lower_width = lowestValue(img.width -1, j + T/2);
-            for(int x = positiveValue(i - T/2); x <= lower_height; ++x) {
-                for(int y = positiveValue(j - T/2); y <= lower_width; ++y) {
+            for (int x = positiveValue(i - T/2); x <= lower_height; ++x) {
+                for (int y = positiveValue(j - T/2); y <= lower_width; ++y) {
                     average.r += img.pixel[x][y].r;
                     average.g += img.pixel[x][y].g;
                     average.b += img.pixel[x][y].b;
@@ -163,16 +163,16 @@ Image mirrorVertically(Image img) {
     if (horizontal == 1) width /= 2;
     else height /= 2;
 
-    for (int i2 = 0; i2 < height; ++i2) {
+    for (int i = 0; i < height; ++i) {
         for (int j = 0; j < width; ++j) {
-            int x = i2, y = j;
+            int x = i, y = j;
 
             if (horizontal == 1) y = img.width - 1 - j;
-            else x = img.height - 1 - i2;
+            else x = img.height - 1 - i;
 
-            Pixel aux1 = img.pixel[i2][j];
+            Pixel aux1 = img.pixel[i][j];
 
-            img.pixel[i2][j] = img.pixel[x][y];
+            img.pixel[i][j] = img.pixel[x][y];
 
             img.pixel[x][y] = aux1;
         }
@@ -199,8 +199,8 @@ Image cropImage(Image img, int x, int y, int width, int height) {
     cropped.width = width;
     cropped.height = height;
 
-    for(int i = 0; i < height; ++i) {
-        for(int j = 0; j < width; ++j) {
+    for (int i = 0; i < height; ++i) {
+        for (int j = 0; j < width; ++j) {
             cropped.pixel[i][j] = img.pixel[i + y][j + x];
         }
     }
@@ -217,7 +217,7 @@ int main() {
     scanf("%d", &n_opcoes);
 
     // read each opperation 'code' (Menu)
-    for(int i = 0; i < n_opcoes; ++i) {
+    for (int i = 0; i < n_opcoes; ++i) {
         int opcao;
         scanf("%d", &opcao);
 
