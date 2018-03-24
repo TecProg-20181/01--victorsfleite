@@ -36,23 +36,23 @@ Image read_image() {
     return img;
 }
 
-int maior(int a, int b) {
+int highestValue(int a, int b) {
     return (a > b) ? a : b;
 }
 
-int menor(int a, int b) {
+int lowestValue(int a, int b) {
     return (a < b) ? a : b;
 }
 
-int positivo(int a) {
+int positiveValue(int a) {
     return (0 > a) ? 0 : a;
 }
 
-int pixel_media(Pixel pixel) {
+int pixelAverage(Pixel pixel) {
     return (pixel.r + pixel.g + pixel.b) / 3;
 }
 
-void print_image(Image img) {
+void printImage(Image img) {
     // print type of image
     printf("P3\n");
 
@@ -70,93 +70,91 @@ void print_image(Image img) {
     }
 }
 
-Image escala_de_cinza(Image img) {
+Image applyGrayScale(Image img) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            int media = pixel_media(img.pixel[i][j]);
-            img.pixel[i][j] = (Pixel){media, media, media};
+            int average = pixelAverage(img.pixel[i][j]);
+            img.pixel[i][j] = (Pixel){average, average, average};
         }
     }
 
     return img;
 }
 
-int sepia_valid_color(Pixel pixel, float sepia_color_values[3]) {
-    int p = pixel.r * sepia_color_values[1] +
-            pixel.g * sepia_color_values[1] +
-            pixel.b * sepia_color_values[2];
-    int color = menor(255, p);
+int formatSepiaColor(Pixel pixel, float sepia_color[3]) {
+    int p = pixel.r * sepia_color[1] +
+            pixel.g * sepia_color[1] +
+            pixel.b * sepia_color[2];
+    int color = lowestValue(255, p);
 
     return color;
 }
 
-Pixel pixel_sepia(Pixel img_pixel) {
+Pixel formatSepiaPixel(Pixel img_pixel) {
     Pixel sepia_pixel;
     float sepia_red[] = {.393, .769, .189};
     float sepia_green[] = {.349, .686, .168};
     float sepia_blue[] = {.272, .534, .131};
 
-    sepia_pixel.r = sepia_valid_color(img_pixel, sepia_red);
-    sepia_pixel.g = sepia_valid_color(img_pixel, sepia_green);
-    sepia_pixel.b = sepia_valid_color(img_pixel, sepia_blue);
+    sepia_pixel.r = formatSepiaColor(img_pixel, sepia_red);
+    sepia_pixel.g = formatSepiaColor(img_pixel, sepia_green);
+    sepia_pixel.b = formatSepiaColor(img_pixel, sepia_blue);
 
     return sepia_pixel;
 }
 
-Image sepia(Image img) {
+Image applySepia(Image img) {
     for(unsigned int i = 0; i < img.height; ++i) {
         for(unsigned int j = 0; j < img.width; ++j) {
-            img.pixel[i][j] = pixel_sepia(img.pixel[i][j]);
+            img.pixel[i][j] = formatSepiaPixel(img.pixel[i][j]);
         }
     }
 
     return img;
 }
 
-Image blur(Image img, int T)
-{
+Image applyBlur(Image img, int T) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            Pixel media = {0, 0, 0};
+            Pixel average = {0, 0, 0};
 
-            int menor_h = menor(img.height - 1, i + T / 2);
-            int menor_w = menor(img.width -1, j + T/2);
-            for(int x = positivo(i - T/2); x <= menor_h; ++x) {
-                for(int y = positivo(j - T/2); y <= menor_w; ++y) {
-                    media.r += img.pixel[x][y].r;
-                    media.g += img.pixel[x][y].g;
-                    media.b += img.pixel[x][y].b;
+            int lower_height = lowestValue(img.height - 1, i + T / 2);
+            int lower_width = lowestValue(img.width -1, j + T/2);
+            for(int x = positiveValue(i - T/2); x <= lower_height; ++x) {
+                for(int y = positiveValue(j - T/2); y <= lower_width; ++y) {
+                    average.r += img.pixel[x][y].r;
+                    average.g += img.pixel[x][y].g;
+                    average.b += img.pixel[x][y].b;
                 }
             }
 
-            // printf("%u", media.r)
-            media.r /= T * T;
-            media.g /= T * T;
-            media.b /= T * T;
+            average.r /= T * T;
+            average.g /= T * T;
+            average.b /= T * T;
 
-            img.pixel[i][j] = media;
+            img.pixel[i][j] = average;
         }
     }
 
     return img;
 }
 
-Image rotacionar90direita(Image img) {
-    Image rotacionada;
+Image rotate90Right(Image img) {
+    Image rotated;
 
-    rotacionada.width = img.height;
-    rotacionada.height = img.width;
+    rotated.width = img.height;
+    rotated.height = img.width;
 
-    for (unsigned int i = 0, y = 0; i < rotacionada.height; ++i, ++y) {
-        for (int j = rotacionada.width - 1, x = 0; j >= 0; --j, ++x) {
-            rotacionada.pixel[i][j] = img.pixel[x][y];
+    for (unsigned int i = 0, y = 0; i < rotated.height; ++i, ++y) {
+        for (int j = rotated.width - 1, x = 0; j >= 0; --j, ++x) {
+            rotated.pixel[i][j] = img.pixel[x][y];
         }
     }
 
-    return rotacionada;
+    return rotated;
 }
 
-Image espelhar_vertical(Image img) {
+Image mirrorVertically(Image img) {
     int horizontal = 0;
     scanf("%d", &horizontal);
 
@@ -183,7 +181,7 @@ Image espelhar_vertical(Image img) {
     return img;
 }
 
-Image inverter_cores(Image img) {
+Image invertColors(Image img) {
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
             img.pixel[i][j] = (Pixel){255 - img.pixel[i][j].r,
@@ -195,19 +193,19 @@ Image inverter_cores(Image img) {
     return img;
 }
 
-Image cortar_imagem(Image img, int x, int y, int width, int height) {
-    Image cortada;
+Image cropImage(Image img, int x, int y, int width, int height) {
+    Image cropped;
 
-    cortada.width = width;
-    cortada.height = height;
+    cropped.width = width;
+    cropped.height = height;
 
     for(int i = 0; i < height; ++i) {
         for(int j = 0; j < width; ++j) {
-            cortada.pixel[i][j] = img.pixel[i + y][j + x];
+            cropped.pixel[i][j] = img.pixel[i + y][j + x];
         }
     }
 
-    return cortada;
+    return cropped;
 }
 
 
@@ -218,18 +216,18 @@ int main() {
     int n_opcoes;
     scanf("%d", &n_opcoes);
 
-    // read each opperation 'code'
+    // read each opperation 'code' (Menu)
     for(int i = 0; i < n_opcoes; ++i) {
         int opcao;
         scanf("%d", &opcao);
 
         switch(opcao) {
-            case 1: { // Escala de Cinza
-                img = escala_de_cinza(img);
+            case 1: { // GrayScale
+                img = applyGrayScale(img);
                 break;
             }
-            case 2: { // Filtro Sepia
-                img = sepia(img);
+            case 2: { // Sepia
+                img = applySepia(img);
 
                 break;
             }
@@ -237,39 +235,39 @@ int main() {
                 // read degree of blur
                 int tamanho = 0;
                 scanf("%d", &tamanho);
-                img = blur(img, tamanho);
+                img = applyBlur(img, tamanho);
                 break;
             }
-            case 4: { // Rotacao
+            case 4: { // Rotation
                 int quantas_vezes = 0;
                 scanf("%d", &quantas_vezes);
                 quantas_vezes %= 4;
                 for (int j = 0; j < quantas_vezes; ++j) {
-                    img = rotacionar90direita(img);
+                    img = rotate90Right(img);
                 }
                 break;
             }
-            case 5: { // Espelhamento
-                img = espelhar_vertical(img);
+            case 5: { // Mirroring
+                img = mirrorVertically(img);
                 break;
             }
-            case 6: { // Inversao de Cores
-                img = inverter_cores(img);
+            case 6: { // Colors Inversion
+                img = invertColors(img);
                 break;
             }
-            case 7: { // Cortar Imagem
+            case 7: { // Crop Image
                 int x, y;
                 scanf("%d %d", &x, &y);
                 int width, height;
                 scanf("%d %d", &width, &height);
 
-                img = cortar_imagem(img, x, y, width, height);
+                img = cropImage(img, x, y, width, height);
                 break;
             }
         }
 
     }
 
-    print_image(img);
+    printImage(img);
     return 0;
 }
